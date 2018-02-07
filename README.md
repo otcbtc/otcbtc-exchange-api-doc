@@ -1,11 +1,14 @@
-# Index
-- BETA Clarification
-    - [beta clarification](#beta-clarification)
-- Api End Point
+# OTCBTC Official Api Documentation
+
+## Beta Warning
+Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
+
+## Index
+- [Api End Point](#end-point)
     - [endpoint](#end-point)
-- Error Message
+- [Error Message](#error-message)
     - [error message](#error-message)
-- Public Api
+- [Public Api](#public-api)
     - [markets](#markets)
     - [tickers](#tickers)
     - [tickers{market}](#tickers{market})    
@@ -14,7 +17,7 @@
     - [server time](#timestamp)
     - [klines](#klines)
     - [klines_with_pending_trades](#klines_with_pending_trades)
-- Auth Api
+- [Auth Api](#auth-api)
     - [users](#users)
     - [orders](#list_orders)
         - [list orders](#list_orders)
@@ -23,10 +26,6 @@
         - [cancel order](#cancel_order)
         - [cancel orders](#cancel_orders)
     - [my trades](#my-trades)
-
-**Beta Clarification**
-----
-Currently this version is in BETA and we may keep developing. Some changes would be expected in later versions .
 
 **End Point**
 ----
