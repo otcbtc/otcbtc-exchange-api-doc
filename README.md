@@ -144,7 +144,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
   `GET`
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/tickers/otbeth`
   
     * **Success Response:**  
@@ -184,7 +184,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
     * bids_limit: _Limit the number of returned buy orders. Default to 20._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/order_book?market=otbeth&asks_limit=1&bids_limit=1`
   
     * **Success Response:**  
@@ -253,7 +253,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
     * order_by: _If set, returned trades will be sorted in specific order, default to 'desc’._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/trades?market=otbeth&limit=1&order_by=desc`
   
     * **Success Response:**  
@@ -287,7 +287,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
   `GET`
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/timestamp`
   
     * **Success Response:**  
@@ -319,7 +319,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
     * timestamp: _An integer represents the seconds elapsed since Unix epoch. If set, only k-line data after that time will be returned._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/klines?market=otbeth&limit=2&period=1`
   
     * **Success Response:**  
@@ -370,7 +370,7 @@ Get K data with pending trades, which are the trades not included in K data yet,
     * timestamp: _An integer represents the seconds elapsed since Unix epoch. If set, only k-line data after that time will be returned._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/klines_with_pending_trades?market=otbeth&trade_id=1&period=1`
   
     * **Success Response:**  
@@ -504,7 +504,7 @@ _The following endpoints requires these 2 authencation parameters._
     * order_by: _If set, returned trades will be sorted in specific order, default to 'asc’._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/orders?access_key=your_api_key&market=otbeth&signature=the_calculated_signature`
 
     * **Success Response:**  
@@ -563,7 +563,7 @@ _The following endpoints requires these 2 authencation parameters._
     * **id`(required)`**: _Unique order id._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/order?access_key=your_api_key&id=1&signature=the_calculated_signature`
 
     * **Success Response:**  
@@ -614,9 +614,9 @@ _The following endpoints requires these 2 authencation parameters._
     * ord_type: _Type of order, now only 'limit'._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `POST /api/v2/orders`
-    * **Resuest Body:**
+    * **Request Body (form-data):**
 
     ```
       {
@@ -669,9 +669,9 @@ _The following endpoints requires these 2 authencation parameters._
     * **id`(required)`**: _Unique order id._
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `POST /api/v2/order/delete`
-    * **Resuest Body:**
+    * **Request Body (form-data):**
 
     ```
       {
@@ -721,9 +721,9 @@ _The following endpoints requires these 2 authencation parameters._
     * side: _If present, only sell orders (asks) or buy orders (bids) will be canncelled. Vaules: 'sell', 'buy'_
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `POST /api/v2/orders/clear`
-    * **Resuest Body:**
+    * **Request Body (form-data):**
 
     ```
       {
@@ -802,7 +802,7 @@ _The following endpoints requires these 2 authencation parameters._
         * **Description:** _If set, returned trades will be sorted in specific order, default to 'desc'. Values: 'asc', 'desc'_
 
 * **Example Request:**
-    * **Resuest:**
+    * **Request:**
     `GET /api/v2/trades/my?market=otbeth&access_key=your_api_key&signature=the_calculated_signature`
 
     * **Success Response:**  
