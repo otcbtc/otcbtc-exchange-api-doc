@@ -619,14 +619,12 @@ _The following endpoints requires these 2 authencation parameters._
     * **Request Body (form-data):**
 
     ```
-      {
-        "market": "otbeth",
-        "side": "sell",
-        "volume": "100",
-        "price": "0.002",
-        "access_key": "your_api_key",
-        "signature": "the_calculated_signature"
-      }
+      "market": "otbeth",
+      "side": "sell",
+      "volume": "100",
+      "price": "0.002",
+      "access_key": "your_api_key",
+      "signature": "the_calculated_signature"
     ```
 
     * **Success Response:**  
@@ -674,11 +672,9 @@ _The following endpoints requires these 2 authencation parameters._
     * **Request Body (form-data):**
 
     ```
-      {
-        "id": "1",
-        "access_key": "your_api_key",
-        "signature": "the_calculated_signature"
-      }
+      "id": "1",
+      "access_key": "your_api_key",
+      "signature": "the_calculated_signature"
     ```
 
     * **Success Response:**  
@@ -726,10 +722,8 @@ _The following endpoints requires these 2 authencation parameters._
     * **Request Body (form-data):**
 
     ```
-      {
-        "access_key": "your_api_key",
-        "signature": "the_calculated_signature"
-      }
+      "access_key": "your_api_key",
+      "signature": "the_calculated_signature"
     ```
 
     * **Success Response:**  
