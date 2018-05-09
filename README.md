@@ -11,7 +11,7 @@ Please be kindly noticed that currently this version is in BETA and we may keep 
 - [Public Api](#public-api)
     - [markets](#markets)
     - [tickers](#tickers)
-    - [tickers{market}](#tickers{market})    
+    - [tickers{market}](#tickersmarket)
     - [order_book](#order_book)
     - [trades](#trades)
     - [server time](#timestamp)
@@ -492,20 +492,22 @@ _The following endpoints requires these 2 authencation parameters._
 
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
-    * **market`(required)`**: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets._
+    * market: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets. If left blank, the api will return your orders of all markets._
 
     * state: _Filter order by state, default to ‘wait’ (active orders). Other options:‘cancel’, ‘done’_
 
     * limit: _Limit the number of returned price levels. Default to 100._
 
-    * page
-        * **Descrpition** _Specify the page of paginated results. Default value: 1_
+    * page: _Specify the page of paginated results. Default value: 1_
 
     * order_by: _If set, returned trades will be sorted in specific order, default to 'asc’._
 
 * **Example Request:**
-    * **Request:**
-    `GET /api/v2/orders?access_key=your_api_key&market=otbeth&signature=the_calculated_signature`
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `GET|/api/v2/orders|access_key=xxx&market=otbeth`
+    * Calculated signature: `be0694b7c33e92da3ec6ee534f7391fb7d0332fc1d867681c5085c5194ed69c8`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/orders?access_key=xxx&market=otbeth&signature=be0694b7c33e92da3ec6ee534f7391fb7d0332fc1d867681c5085c5194ed69c8`
 
     * **Success Response:**  
         * **Code:** 200
@@ -563,8 +565,11 @@ _The following endpoints requires these 2 authencation parameters._
     * **id`(required)`**: _Unique order id._
 
 * **Example Request:**
-    * **Request:**
-    `GET /api/v2/order?access_key=your_api_key&id=1&signature=the_calculated_signature`
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `GET|/api/v2/order|access_key=xxx&id=1`
+    * Calculated signature: `c242b60f1830337f7618afab08d378b7cb2e9501fe226e76e0cab0ee93ac1933`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/order?access_key=xxx&id=1&signature=c242b60f1830337f7618afab08d378b7cb2e9501fe226e76e0cab0ee93ac1933`
 
     * **Success Response:**  
         * **Code:** 200
@@ -614,20 +619,23 @@ _The following endpoints requires these 2 authencation parameters._
     * ord_type: _Type of order, now only 'limit'._
 
 * **Example Request:**
-    * **Request:**
-    `POST /api/v2/orders`
-    * **Request Body (form-data):**
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `POST|/api/v2/orders|access_key=xxx&market=otbeth&price=0.002&side=sell&volume=100`
+    * Calculated signature: `efcc83119fe25b18f0a02302aaee7765b62d7bf64dc6c5d4f2266f5a5fda4327`
+    * Example Request: `POST https://bb.otcbtc.com/api/v2/orders`
+    * Example Request Body (form-data):
 
-    ```
-      "market": "otbeth",
-      "side": "sell",
-      "volume": "100",
-      "price": "0.002",
-      "access_key": "your_api_key",
-      "signature": "the_calculated_signature"
-    ```
+        ```
+          "market": "otbeth",
+          "side": "sell",
+          "volume": "100",
+          "price": "0.002",
+          "access_key": "xxx",
+          "signature": "efcc83119fe25b18f0a02302aaee7765b62d7bf64dc6c5d4f2266f5a5fda4327"
+        ```
 
-    * **Success Response:**  
+    * **Success Response:**
         * **Code:** 200
         * **Response Body:** 
 
@@ -667,15 +675,18 @@ _The following endpoints requires these 2 authencation parameters._
     * **id`(required)`**: _Unique order id._
 
 * **Example Request:**
-    * **Request:**
-    `POST /api/v2/order/delete`
-    * **Request Body (form-data):**
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `POST|/api/v2/order/delete|access_key=xxx&id=1`
+    * Calculated signature: `47ba4a04e8f5471a05078f8dd13976b7caa80665c5f8152d654486de327c395c`
+    * Example Request: `POST https://bb.otcbtc.com/api/v2/order/delete`
+    * Example Request Body (form-data):
 
-    ```
-      "id": "1",
-      "access_key": "your_api_key",
-      "signature": "the_calculated_signature"
-    ```
+      ```
+        "id": "1",
+        "access_key": "xxx",
+        "signature": "47ba4a04e8f5471a05078f8dd13976b7caa80665c5f8152d654486de327c395c"
+      ```
 
     * **Success Response:**  
         * **Code:** 200
@@ -717,14 +728,17 @@ _The following endpoints requires these 2 authencation parameters._
     * side: _If present, only sell orders (asks) or buy orders (bids) will be canncelled. Vaules: 'sell', 'buy'_
 
 * **Example Request:**
-    * **Request:**
-    `POST /api/v2/orders/clear`
-    * **Request Body (form-data):**
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `POST|/api/v2/orders/clear|access_key=xxx`
+    * Calculated signature: `f2ab1d061ad07a2de9fe7658b7203ce28ed6b6511287502b2a7a869172039bcf`
+    * Example Request: `POST https://bb.otcbtc.com/api/v2/orders/clear`
+    * Example Request Body (form-data):
 
-    ```
-      "access_key": "your_api_key",
-      "signature": "the_calculated_signature"
-    ```
+      ```
+        "access_key": "xxx",
+        "signature": "f2ab1d061ad07a2de9fe7658b7203ce28ed6b6511287502b2a7a869172039bcf"
+      ```
 
     * **Success Response:**  
         * **Code:** 200
@@ -783,23 +797,22 @@ _The following endpoints requires these 2 authencation parameters._
 
     * limit: _Limit the number of returned trades. Default to 50. Range 1..1000_
 
-    * timestamp
-        * **Description:** _An integer represents the seconds elapsed since Unix epoch. If set, only trades executed before the time will be returned._
+    * timestamp: _An integer represents the seconds elapsed since Unix epoch. If set, only trades executed before the time will be returned._
 
-    * from
-        * **Description:** _Trade id. If set, only trades created after the trade will be returned._
+    * from: _Trade id. If set, only trades created after the trade will be returned._
 
-    * to
-        * **Description:** _Trade id. If set, only trades created before the trade will be returned._
+    * to: _Trade id. If set, only trades created before the trade will be returned._
 
-    * order_by
-        * **Description:** _If set, returned trades will be sorted in specific order, default to 'desc'. Values: 'asc', 'desc'_
+    * order_by:_If set, returned trades will be sorted in specific order, default to 'desc'. Values: 'asc', 'desc'_
 
 * **Example Request:**
-    * **Request:**
-    `GET /api/v2/trades/my?market=otbeth&access_key=your_api_key&signature=the_calculated_signature`
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `GET|/api/v2/trades/my|access_key=xxx&market=otbeth`
+    * Calculated signature: `9dbe0ecdcd3db5030486764dd8b8a4f15a6ee3eae47856f864d11f34c9eba478`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/trades/my?access_key=xxx&market=otbeth&signature=9dbe0ecdcd3db5030486764dd8b8a4f15a6ee3eae47856f864d11f34c9eba478`    
 
-    * **Success Response:**  
+    * **Success Response:**
         * **Code:** 200
         * **Response Body:** 
 
