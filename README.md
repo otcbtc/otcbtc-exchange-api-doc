@@ -1,14 +1,17 @@
-# OTCBTC Official Api Documentation
+# OTCBTC Official API Documentation
 
 ## Beta Warning
 Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
 
+## Web Socket API document
+The web socket API document can be found here: https://github.com/otcbtc/otcbtc-exchange-api-doc/blob/master/WEB_SOCKET_API.md
+
 ## Index
-- [Api End Point](#end-point)
+- [API End Point](#end-point)
     - [endpoint](#end-point)
 - [Error Message](#error-message)
     - [error message](#error-message)
-- [Public Api](#public-api)
+- [Public API](#public-api)
     - [markets](#markets)
     - [tickers](#tickers)
     - [tickers{market}](#tickersmarket)
@@ -17,7 +20,7 @@ Please be kindly noticed that currently this version is in BETA and we may keep 
     - [server time](#timestamp)
     - [klines](#klines)
     - [klines_with_pending_trades](#klines_with_pending_trades)
-- [Auth Api](#auth-api)
+- [Auth API](#auth-api)
     - [users](#users)
     - [orders](#list_orders)
         - [list orders](#list_orders)
@@ -29,12 +32,12 @@ Please be kindly noticed that currently this version is in BETA and we may keep 
 
 **End Point**
 ----
-The base api endpoint is `https://bb.otcbtc.com`
+The base API endpoint is `https://bb.otcbtc.com`
 
 **Error Message**
 ----
 
-If Api request failed, the response will return HTTP status code, e.g. 400, 401, 404 etc., and detailed error message in JSON format.
+If API request failed, the response will return HTTP status code, e.g. 400, 401, 404 etc., and detailed error message in JSON format.
 
 ```
   {
@@ -45,7 +48,7 @@ If Api request failed, the response will return HTTP status code, e.g. 400, 401,
   }
 ```
 
-**Public Api**
+**Public API**
 ----
 
 ### markets
@@ -404,7 +407,7 @@ Get K data with pending trades, which are the trades not included in K data yet,
         }
         ```
 
-**Auth Api**
+**Auth API**
 ----
 
 `auth` endpoints requires 2 extra authencation paramsters:
