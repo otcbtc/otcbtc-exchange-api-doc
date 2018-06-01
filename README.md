@@ -3,6 +3,9 @@
 ## Beta Warning
 Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
 
+## Web Socket API document
+The web socket API document can be found here: https://github.com/otcbtc/otcbtc-exchange-api-doc/blob/master/WEB_SOCKET_API.md
+
 ## Index
 - [API End Point](#end-point)
     - [endpoint](#end-point)
