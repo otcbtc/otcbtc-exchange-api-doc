@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2018.06.01
+
+* Add Web Socket API document.
+
 ## 2018.05.09
 
 * Add more examples of signature.
