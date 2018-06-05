@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2018.06.05
+
+* Update pusher app key.
+
 ## 2018.06.01
 
 * Add Web Socket API document.
