@@ -19,8 +19,8 @@ Please be kindly noticed that currently this version is in BETA and we may keep 
 * Key:
 
   ```
-  app_id = "431127"
-  key = "aa53d2154fcdf7c92a1a"
+  app_id = "529880"
+  key = "8cf6d4a8a620ca268cee"
   cluster = "ap1"
   ```
 
