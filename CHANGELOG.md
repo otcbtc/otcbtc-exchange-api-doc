@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2018.06.11
+
+* Add /api/v2/account API.
+* Add user icon & otb_fee_enabled information for /api/v2/users/me API.
+
 ## 2018.06.05
 
 * Update pusher app key.

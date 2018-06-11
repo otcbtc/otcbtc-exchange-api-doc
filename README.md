@@ -22,6 +22,7 @@ The web socket API document can be found here: https://github.com/otcbtc/otcbtc-
     - [klines_with_pending_trades](#klines_with_pending_trades)
 - [Auth API](#auth-api)
     - [users](#users)
+    - [account](#account)
     - [orders](#list_orders)
         - [list orders](#list_orders)
         - [list order](#list_order)
@@ -69,9 +70,14 @@ If API request failed, the response will return HTTP status code, e.g. 400, 401,
     ```
     [
       {
-        "id": "otbeth",         // Unique marked id.
+        "id": "btceth",         // Unique marked id.
         "ticker_id": "btc_eth", // Unique ticker id.
         "name": "BTC/ETH"       // market name
+        "trading_rule": {
+            "min_amount": 0.001,       // Order minimum amount.
+            "min_price": 0.000001,     // Order minimum price.
+            "min_order_volume": 0.0001 // Order minimum total volume.
+        }
       },
       {
         "id": "otbeth",
@@ -459,14 +465,16 @@ _The following endpoints requires these 2 authencation parameters._
 
         ```
         {
-          "user_name": "u1513250056",        // your user name
-          "email": "u1513250056@gmail.com",  // your email
-          "accounts": [                      // your account information
+          "user_name": "u1513250056",             // your user name
+          "email": "u1513250056@gmail.com",       // your email
+          "icon": "/images/user_default_pic.png", // your icon image path
+          "otb_fee_enabled": true,                // whether use OTB to pay for fees or not
+          "accounts": [                           // your account information
             {
-              "currency": "btc",             // your BTC account
-              "balance": "0.01",             // your current BTC balance amount
-              "locked": "0.001",             // your current BTC locked amount
-              "saving": "0.0"                // your current BTC saving amount
+              "currency": "btc",                  // your BTC account
+              "balance": "0.01",                  // your current BTC balance amount
+              "locked": "0.001",                  // your current BTC locked amount
+              "saving": "0.0"                     // your current BTC saving amount
             },
             {
               "currency": "otb",
@@ -476,6 +484,44 @@ _The following endpoints requires these 2 authencation parameters._
             },
             ...
           ]
+        }
+        ```
+
+### account
+
+* **URL**
+  /api/v2/account
+
+* **Description**
+  Get one of your specific accounts information.
+
+* **Method:**
+  `GET`
+
+* **Parameters**
+    * **access_key`(required)`**: _Access key._
+
+    * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
+    
+    * currency: _The account currency._
+  
+* **Example Request:**
+    * Access Key: `xxx`
+    * Secret Key: `yyy`
+    * payload: `GET|/api/v2/account|access_key=xxx&currency=btc`
+    * Calculated signature: `67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/account?access_key=xxx&currency=btc&signature=67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
+
+    * **Success Response:**  
+        * **Code:** 200
+        * **Response Body:** 
+
+        ```
+        {
+          "currency": "btc",             // your BTC account
+          "balance": "0.01",             // your current BTC balance amount
+          "locked": "0.001",             // your current BTC locked amount
+          "saving": "0.0"                // your current BTC saving amount
         }
         ```
 
