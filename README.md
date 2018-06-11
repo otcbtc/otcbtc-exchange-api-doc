@@ -3,6 +3,8 @@
 ## Beta Warning
 Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
 
+**2018-06-11: API `/api/v2/order_book` will be deprecated soon. Please use [depth](#depth) API instead.**
+
 ## Web Socket API document
 The web socket API document can be found here: https://github.com/otcbtc/otcbtc-exchange-api-doc/blob/master/WEB_SOCKET_API.md
 
@@ -15,7 +17,7 @@ The web socket API document can be found here: https://github.com/otcbtc/otcbtc-
     - [markets](#markets)
     - [tickers](#tickers)
     - [tickers{market}](#tickersmarket)
-    - [order_book](#order_book)
+    - [depth](#depth)
     - [trades](#trades)
     - [server time](#timestamp)
     - [klines](#klines)
@@ -174,13 +176,63 @@ If API request failed, the response will return HTTP status code, e.g. 400, 401,
         }
         ```
  
+### depth
+
+* **URL**
+  /api/v2/depth
+
+* **Description**
+  Get the depth information of specified market.
+
+* **Method:**
+  `GET`
+
+* **Parameters**
+    * **market`(required)`**: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets._
+
+    * limit: _Limit the number of returned price levels. Default to 300, minimum value: 1, maximum value: 1000._
+
+* **Example Request:**
+    * **Request:**
+    `GET /api/v2/depth?market=otbeth&limit=2`
+
+    * **Success Response:**
+        * **Code:** 200
+        * **Content:**
+
+        ```
+        {
+            "timestamp": 1528722917,  // Unix timestamp
+            "asks": [
+                [
+                    "0.00072214",     // Price
+                    "507.64233312"    // Volume
+                ],
+                [
+                    "0.00072213",
+                    "635.99314234"
+                ]
+            ],
+            "bids": [
+                [
+                    "0.0007013",
+                    "3709.62342791"
+                ],
+                [
+                    "0.00070117",
+                    "144.23891495"
+                ]
+            ]
+        }
+        ```
+
 ### order_book
 
 * **URL**
   /api/v2/order_book
 
 * **Description**
-  Get the order book of specified market.
+  This API will be deprecated soon. Please use `/api/v2/depth` instead.
 
 * **Method:**
   `GET`
@@ -502,9 +554,9 @@ _The following endpoints requires these 2 authencation parameters._
     * **access_key`(required)`**: _Access key._
 
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
-    
-    * currency: _The account currency._
-  
+
+    * **currency`(required)`**: _The account currency._
+
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
@@ -512,9 +564,9 @@ _The following endpoints requires these 2 authencation parameters._
     * Calculated signature: `67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
     * Example Request: `GET https://bb.otcbtc.com/api/v2/account?access_key=xxx&currency=btc&signature=67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
 
-    * **Success Response:**  
+    * **Success Response:**
         * **Code:** 200
-        * **Response Body:** 
+        * **Response Body:**
 
         ```
         {
