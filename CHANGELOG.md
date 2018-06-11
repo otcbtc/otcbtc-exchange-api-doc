@@ -4,6 +4,7 @@
 
 * Add /api/v2/account API.
 * Add user icon & otb_fee_enabled information for /api/v2/users/me API.
+* Deprecate warning for API `/api/v2/order_book`, and add API `/api/v2/depth`.
 
 ## 2018.06.05
 
