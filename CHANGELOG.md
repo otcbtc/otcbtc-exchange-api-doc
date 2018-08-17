@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2018.08.17
+
+* Add `nonce` parameter for all auth endpoints.
+
 ## 2018.06.11
 
 * Add /api/v2/account API.
