@@ -3,7 +3,13 @@
 ## Beta Warning
 Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
 
-**2018-06-11: API `/api/v2/order_book` will be deprecated soon. Please use [depth](#depth) API instead.**
+## Get Notified of API Update Info
+Please check the custom header field `Deprecation-Warning` in each the response.
+If any endpoint will get updated or deprecated we will add deprecation information to this field in it's response's header.
+
+## Important Announcement
+**2018-08-17:**
+All `auth` endpoints will require `nonce` as one additional parameter except for `access_key` and `signature`. Before `2018-09-30` `nonce` is not _mandatory_ for all `auth` endpoints requests, but **after `2018-09-30` it is _mandatory_** and error response would be expected without it. For detailed information please check [Auth API part](#auth-api).
 
 ## Web Socket API document
 The web socket API document can be found here: https://github.com/otcbtc/otcbtc-exchange-api-doc/blob/master/WEB_SOCKET_API.md
@@ -13,6 +19,7 @@ The web socket API document can be found here: https://github.com/otcbtc/otcbtc-
     - [endpoint](#end-point)
 - [Error Message](#error-message)
     - [error message](#error-message)
+- [Rate Limiting](#rate-limiting)
 - [Public API](#public-api)
     - [markets](#markets)
     - [tickers](#tickers)
@@ -50,6 +57,11 @@ If API request failed, the response will return HTTP status code, e.g. 400, 401,
     }
   }
 ```
+
+**Rate Limiting**
+---
+
+For ALL API v2 endpoints, the maximum access rate is *200 requests per minute*, any clients initiates more requests will be throttled with status code `429`.
 
 **Public API**
 ----
@@ -223,69 +235,6 @@ If API request failed, the response will return HTTP status code, e.g. 400, 401,
                     "144.23891495"
                 ]
             ]
-        }
-        ```
-
-### order_book
-
-* **URL**
-  /api/v2/order_book
-
-* **Description**
-  This API will be deprecated soon. Please use `/api/v2/depth` instead.
-
-* **Method:**
-  `GET`
-
-* **Parameters**
-    * **market`(required)`**: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets._
-
-    * asks_limit: _Limit the number of returned sell orders. Default to 20._
-
-    * bids_limit: _Limit the number of returned buy orders. Default to 20._
-
-* **Example Request:**
-    * **Request:**
-    `GET /api/v2/order_book?market=otbeth&asks_limit=1&bids_limit=1`
-  
-    * **Success Response:**  
-        * **Code:** 200
-        * **Content:** 
-
-        ```
-        {
-          "asks": [
-            {
-              "id": 71468,                               // Unique order id
-              "side": "sell",                            // Either 'sell' or 'buy'.
-              "ord_type": "limit",                       // Type of order, now only 'limit'.
-              "price": "0.00116",                        // Price for each unit. e.g. If you sell/buy 1 OTB at 0.00116 ETH, the price is '0.00116'
-              "avg_price": "0.00116",                    // Average execution price, average of price in trades.
-              "state": "wait",                           // One of 'wait', 'done', or 'cancel'. An order in 'wait' is an active order, waiting fullfillment; a 'done' order is an order fullfilled; 'cancel' means the order has been cancelled.
-              "market": "otbeth",                        // The market in which the order is placed, e.g. 'otbeth'. All available markets can be found at /api/v2/markets.
-              "created_at": "2018-02-04T20:13:01+08:00", // Order create time in iso8601 format.
-              "volume": "5000.0",                        // The amount user want to sell/buy. An order could be partially executed, e.g. an order sell 5000 otb can be matched with a buy 2146.6 otb order, left 2000 otb to be sold; in this case the order's volume would be '5000.0', its remaining_volume would be '2853.4', its executed volume is '2146.6'.
-              "remaining_volume": "2853.4",              // The remaining volume
-              "executed_volume": "2146.6",               // The executed volume
-              "trades_count": 3                          // Counts of trades under this order
-            }
-          ],
-          "bids": [
-            {
-              "id": 74866,
-              "side": "buy",
-              "ord_type": "limit",
-              "price": "0.00113212",
-              "avg_price": "0.00113212",
-              "state": "wait",
-              "market": "otbeth",
-              "created_at": "2018-02-05T20:32:35+08:00",
-              "volume": "849.15791612",
-              "remaining_volume": "845.15791612",
-              "executed_volume": "4.0",
-              "trades_count": 1
-            }
-          ]
         }
         ```
 
@@ -468,28 +417,29 @@ Get K data with pending trades, which are the trades not included in K data yet,
 **Auth API**
 ----
 
-`auth` endpoints requires 2 extra authencation paramsters:
+`auth` endpoints requires 3 extra authentication parameters:
 
 * `access_key`: your api key
+* **nonce`(required)`**: Current timestamp to milisecond (13 digits). For example in Javascript you can get it by calling `+ new Date()`, and have `1532422489533` as the result for nonce. Server will only accept nonce within time window of ± 30 seconds.
 * `signature`: can be generated by `HMAC-SHA256(payload, your_api_secret).to_hex`
     * `payload` is a string represents this request, combiled with HTTP method, request URI and request parameters:
         - HTTP method: e.g. "GET", "POST", etc
         - request URI: such as "/users/me", or "trades/my"
-        - request parameters: parameters concated with "&", MUST BE IN ALPHABETICAL ORDER by parameters' name. 
+        - request parameters: parameters concated with "&", **MUST BE IN ALPHABETICAL ORDER** by parameters' name.
 
-Then concat the above 3 strings with `|`, you will have the `payload`.
+      Then concat the above 3 strings with `|`, you get the `payload`.
 
 For example:
 
-if your `api key` is `xxx`, and your `api secret` is `yyy`, then the `payload` is `GET|/api/v2/users/me|access_key=xxx`.
+if your `api key` is `xxx`, and your `api secret` is `yyy`, then the `payload` is `GET|/api/v2/users/me|access_key=xxx&nonce=1532422489533`.
 
-The `signature` is then calculated: `a71c1c5ee28fbd2196ee0bca9e334a18e6053526bd979020ef3839245136c763`
+The `signature` is then calculated: `2ef04a000121ec67ad712b8437a5b3970bb713dd6a534890e7500ffda7848ba7`
 
 And you can make the request:
 
-`GET /api/v2/users/me?access_key=xxx&signature=a71c1c5ee28fbd2196ee0bca9e334a18e6053526bd979020ef3839245136c763`
+`GET /api/v2/users/me?access_key=xxx&nonce=1532422489533&signature=2ef04a000121ec67ad712b8437a5b3970bb713dd6a534890e7500ffda7848ba7`
 
-_The following endpoints requires these 2 authencation parameters._
+_The following endpoints requires these 3 authentication parameters._
 
 ### users
 
@@ -505,11 +455,13 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`**: _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
   
 * **Example Request:**
     * **Request:**
-    Please refer to the example above
+    Please refer to the above example.
 
     * **Success Response:**  
         * **Code:** 200
@@ -553,6 +505,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`**: _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * **currency`(required)`**: _The account currency._
@@ -560,9 +514,9 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `GET|/api/v2/account|access_key=xxx&currency=btc`
-    * Calculated signature: `67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
-    * Example Request: `GET https://bb.otcbtc.com/api/v2/account?access_key=xxx&currency=btc&signature=67e6592036c53896c2c54b9c25214db6c731a3f0a2874a006db2c4de0b7cbb14`
+    * payload: `GET|/api/v2/account|access_key=xxx&currency=btc&nonce=1532422489533`
+    * Calculated signature: `cd9afcb8a0167afc02274efcb23affef4f981b8262c709b9a1414e50b02061f3`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/account?access_key=xxx&currency=btc&nonce=1532422489533&signature=cd9afcb8a0167afc02274efcb23affef4f981b8262c709b9a1414e50b02061f3`
 
     * **Success Response:**
         * **Code:** 200
@@ -591,6 +545,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`**: _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * market: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets. If left blank, the api will return your orders of all markets._
@@ -606,9 +562,9 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `GET|/api/v2/orders|access_key=xxx&market=otbeth`
-    * Calculated signature: `be0694b7c33e92da3ec6ee534f7391fb7d0332fc1d867681c5085c5194ed69c8`
-    * Example Request: `GET https://bb.otcbtc.com/api/v2/orders?access_key=xxx&market=otbeth&signature=be0694b7c33e92da3ec6ee534f7391fb7d0332fc1d867681c5085c5194ed69c8`
+    * payload: `GET|/api/v2/orders|access_key=xxx&market=otbeth&nonce=1532422489533`
+    * Calculated signature: `f56ae68d3296972f87f03fc5915325fee2cc5eae6198aa8e0147cd8dc3a1eb19`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/orders?access_key=xxx&market=otbeth&nonce=1532422489533&signature=f56ae68d3296972f87f03fc5915325fee2cc5eae6198aa8e0147cd8dc3a1eb19`
 
     * **Success Response:**  
         * **Code:** 200
@@ -661,6 +617,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`**: _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * **id`(required)`**: _Unique order id._
@@ -668,9 +626,9 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `GET|/api/v2/order|access_key=xxx&id=1`
-    * Calculated signature: `c242b60f1830337f7618afab08d378b7cb2e9501fe226e76e0cab0ee93ac1933`
-    * Example Request: `GET https://bb.otcbtc.com/api/v2/order?access_key=xxx&id=1&signature=c242b60f1830337f7618afab08d378b7cb2e9501fe226e76e0cab0ee93ac1933`
+    * payload: `GET|/api/v2/order|access_key=xxx&id=1&nonce=1532422489533`
+    * Calculated signature: `9bdacb1fbd0c86cbea2aa86edfa067abd01705254c6440f6d04e7d0c84cf3e24`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/order?access_key=xxx&id=1&nonce=1532422489533&signature=9bdacb1fbd0c86cbea2aa86edfa067abd01705254c6440f6d04e7d0c84cf3e24`
 
     * **Success Response:**  
         * **Code:** 200
@@ -707,6 +665,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`:** _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * **market`(required)`**: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets._
@@ -722,18 +682,19 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `POST|/api/v2/orders|access_key=xxx&market=otbeth&price=0.002&side=sell&volume=100`
-    * Calculated signature: `efcc83119fe25b18f0a02302aaee7765b62d7bf64dc6c5d4f2266f5a5fda4327`
+    * payload: `POST|/api/v2/orders|access_key=xxx&market=otbeth&nonce=1532422489533&price=0.002&side=sell&volume=100`
+    * Calculated signature: `ceecb86aff743874ec5e40751b133459e78831e6000b6fb48b6b9d38b9360a96`
     * Example Request: `POST https://bb.otcbtc.com/api/v2/orders`
     * Example Request Body (form-data):
 
         ```
           "market": "otbeth",
+          "nonce": "1532422489533",
           "side": "sell",
           "volume": "100",
           "price": "0.002",
           "access_key": "xxx",
-          "signature": "efcc83119fe25b18f0a02302aaee7765b62d7bf64dc6c5d4f2266f5a5fda4327"
+          "signature": "ceecb86aff743874ec5e40751b133459e78831e6000b6fb48b6b9d38b9360a96"
         ```
 
     * **Success Response:**
@@ -771,6 +732,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`:** _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * **id`(required)`**: _Unique order id._
@@ -778,15 +741,16 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `POST|/api/v2/order/delete|access_key=xxx&id=1`
-    * Calculated signature: `47ba4a04e8f5471a05078f8dd13976b7caa80665c5f8152d654486de327c395c`
+    * payload: `POST|/api/v2/order/delete|access_key=xxx&id=1&nonce=1532422489533`
+    * Calculated signature: `9bc87002bd76354c3f70c22b17118100686d19357fdb84df6d310afc80cd9c98`
     * Example Request: `POST https://bb.otcbtc.com/api/v2/order/delete`
     * Example Request Body (form-data):
 
       ```
         "id": "1",
         "access_key": "xxx",
-        "signature": "47ba4a04e8f5471a05078f8dd13976b7caa80665c5f8152d654486de327c395c"
+        "nonce": "1532422489533"
+        "signature": "9bc87002bd76354c3f70c22b17118100686d19357fdb84df6d310afc80cd9c98"
       ```
 
     * **Success Response:**  
@@ -824,6 +788,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`:** _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * side: _If present, only sell orders (asks) or buy orders (bids) will be canncelled. Vaules: 'sell', 'buy'_
@@ -831,14 +797,15 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `POST|/api/v2/orders/clear|access_key=xxx`
-    * Calculated signature: `f2ab1d061ad07a2de9fe7658b7203ce28ed6b6511287502b2a7a869172039bcf`
+    * payload: `POST|/api/v2/orders/clear|access_key=xxx&nonce=1532422489533`
+    * Calculated signature: `a51aae4afa4149abc2894c48c0a54f5cfd7e6e206d63c30a5fd2ffad9bb9afb5`
     * Example Request: `POST https://bb.otcbtc.com/api/v2/orders/clear`
     * Example Request Body (form-data):
 
       ```
         "access_key": "xxx",
-        "signature": "f2ab1d061ad07a2de9fe7658b7203ce28ed6b6511287502b2a7a869172039bcf"
+        "nonce": "1532422489533",
+        "signature": "a51aae4afa4149abc2894c48c0a54f5cfd7e6e206d63c30a5fd2ffad9bb9afb5"
       ```
 
     * **Success Response:**  
@@ -892,6 +859,8 @@ _The following endpoints requires these 2 authencation parameters._
 * **Parameters**
     * **access_key`(required)`**: _Access key._
 
+    * **nonce`(required)`**: _Current timestamp to milisecond (13 digits)._
+
     * **signature`(required)`**: _The signature of your request payload, generated using your secret key._
 
     * **market`(required)`**: _Unique market id. It’s always in the form of xxxyyy, where xxx is the base currency code, yyy is the quote currency code, e.g. 'otbeth’. All available markets can be found at /api/v2/markets._
@@ -909,9 +878,9 @@ _The following endpoints requires these 2 authencation parameters._
 * **Example Request:**
     * Access Key: `xxx`
     * Secret Key: `yyy`
-    * payload: `GET|/api/v2/trades/my|access_key=xxx&market=otbeth`
-    * Calculated signature: `9dbe0ecdcd3db5030486764dd8b8a4f15a6ee3eae47856f864d11f34c9eba478`
-    * Example Request: `GET https://bb.otcbtc.com/api/v2/trades/my?access_key=xxx&market=otbeth&signature=9dbe0ecdcd3db5030486764dd8b8a4f15a6ee3eae47856f864d11f34c9eba478`    
+    * payload: `GET|/api/v2/trades/my|access_key=xxx&market=otbeth&nonce=1532422489533`
+    * Calculated signature: `1aaf9c0f311b1706e9f535c034795b2854ff726139ac64a13348f84cbc7ce42d`
+    * Example Request: `GET https://bb.otcbtc.com/api/v2/trades/my?access_key=xxx&market=otbeth&signature=1aaf9c0f311b1706e9f535c034795b2854ff726139ac64a13348f84cbc7ce42d`
 
     * **Success Response:**
         * **Code:** 200
