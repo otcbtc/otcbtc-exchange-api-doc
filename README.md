@@ -4,8 +4,8 @@
 Please be kindly noticed that currently this version is in BETA and we may keep developing. Some changes would be expected in later versions.
 
 ## Get Notified of API Update Info
-Please check the custom header field `Deprecation-Warning` in each the response.
-If any endpoint will get updated or deprecated we will add deprecation information to this field in it's response's header.
+Please check the custom header field `Deprecation-Warning` in each response.
+If any endpoint will get updated or deprecated, we will add deprecation information to this field in the response header.
 
 ## Important Announcement
 **2018-08-17:**
