@@ -42,7 +42,7 @@ The web socket API document can be found here: https://github.com/otcbtc/otcbtc-
 
 **End Point**
 ----
-The base API endpoint is `https://bb.otcbtc.com`
+The base API endpoint is `https://bb.otcbtc.com`. An alternative is `https://bb.otcbtc.io`.
 
 **Error Message**
 ----
