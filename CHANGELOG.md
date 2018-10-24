@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2018.10.24
+
+* Add a secondary API endpoint.
+
 ## 2018.08.17
 
 * Add `nonce` parameter for all auth endpoints.
